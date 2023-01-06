@@ -27,11 +27,25 @@ const appendFile = (content, file) => {
   });
 };
 
+const deleteFile = (content, file) => {
+  fs.readFile(file, 'utf8', (err, data) => {
+    if (err) {
+      console.error(err);
+    } else {
+      const parsedNote = JSON.parse(data);
+      parsedNote.splice(content, 1);
+      writeFile(file, parsedNote);
+    }
+  });
+};
+
 app.get('/', (req, res) => {
+  console.info(`${req.method} request recieved!`);
   res.sendFile(path.join(__dirname, './public/index.html'));
 });
 
 app.get('/notes', (req, res) => {
+  console.info(`${req.method} request recieved!`);
   res.sendFile(path.join(__dirname, './public/notes.html'));
 });
 
@@ -41,7 +55,7 @@ app.get('/api/notes', (req, res) => {
   res.json(JSON.parse(data));
 });
 
-app.post("/api/notes", function (req, res) {
+app.post('/api/notes', function (req, res) {
   console.info(`${req.method} request recieved!`);
   const { title, text } = req.body;
 
@@ -57,6 +71,11 @@ app.post("/api/notes", function (req, res) {
   } else {
     res.error('There was an error adding the note!')
   }
+});
+
+app.delete ('/api/notes/:id', (req, res) => {
+  console.info(`${req.method} request recieved!`);
+  deleteFile(req.params.id, './db/db.json')
 });
 
 app.listen(PORT);
