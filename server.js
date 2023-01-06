@@ -27,18 +27,6 @@ const appendFile = (content, file) => {
   });
 };
 
-const deleteFile = (content, file) => {
-  fs.readFile(file, 'utf8', (err, data) => {
-    if (err) {
-      console.error(err);
-    } else {
-      const parsedNote = JSON.parse(data);
-      parsedNote.splice(content, 1);
-      writeFile(file, parsedNote);
-    }
-  });
-};
-
 app.get('/', (req, res) => {
   console.info(`${req.method} request recieved!`);
   res.sendFile(path.join(__dirname, './public/index.html'));
@@ -71,11 +59,6 @@ app.post('/api/notes', function (req, res) {
   } else {
     res.error('There was an error adding the note!')
   }
-});
-
-app.delete ('/api/notes/:id', (req, res) => {
-  console.info(`${req.method} request recieved!`);
-  deleteFile(req.params.id, './db/db.json')
 });
 
 app.listen(PORT);
